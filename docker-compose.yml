@@ -1,0 +1,29 @@
+  version: '3' 
+  services: 
+    database: 
+      image: mysql
+      container_name: mysql-container
+      environment: 
+        - MYSQL_ROOT_PASSWORD=root 
+        - MYSQL_DATABASE=jbpm 
+        - MYSQL_USER=jbpm 
+        - MYSQL_PASSWORD=jbpm 
+    jbpm:
+      build: .
+      container_name: jbpm-container
+      ports: 
+        - 8080:8080
+        - 8081:8081
+        - 9990:9990
+      links: 
+        - database
+    web: 
+      image: sebahi/tomcat:9.0
+      container_name: tomcat-container
+      ports: 
+        - 9090:8080
+      depends_on: 
+        - database
+        - jbpm
+      volumes: 
+        - /home/ociouser/workitems/:/usr/local/tomcat/webapps
